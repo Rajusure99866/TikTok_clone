@@ -1,0 +1,382 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.3.2 effective-4.2 (swiftlang-1200.0.45 clang-1200.0.32.28)
+// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 4.2 -enforce-exclusivity=checked -Onone -module-name Cache
+import Dispatch
+import Foundation
+import Swift
+import UIKit
+final public class DiskStorage<Key, Value> where Key : Swift.Hashable {
+  final public let fileManager: Foundation.FileManager
+  final public let path: Swift.String
+  public convenience init(config: Cache.DiskConfig, fileManager: Foundation.FileManager = FileManager.default, transformer: Cache.Transformer<Value>) throws
+  required public init(config: Cache.DiskConfig, fileManager: Foundation.FileManager = FileManager.default, path: Swift.String, transformer: Cache.Transformer<Value>)
+  @objc deinit
+}
+extension DiskStorage : Cache.StorageAware {
+  final public var allKeys: [Key] {
+    get
+  }
+  final public var allObjects: [Value] {
+    get
+  }
+  final public func entry(forKey key: Key) throws -> Cache.Entry<Value>
+  final public func setObject(_ object: Value, forKey key: Key, expiry: Cache.Expiry? = nil) throws
+  final public func removeObject(forKey key: Key) throws
+  final public func removeAll() throws
+  final public func removeExpiredObjects() throws
+}
+extension DiskStorage {
+  final public func transform<U>(transformer: Cache.Transformer<U>) -> Cache.DiskStorage<Key, U>
+}
+extension DiskStorage {
+  final public var totalSize: Swift.Int? {
+    get
+  }
+}
+public struct ImageWrapper : Swift.Codable {
+  public let image: Cache.Image
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case image
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+    public init?(stringValue: Swift.String)
+    public var intValue: Swift.Int? {
+      get
+    }
+    public init?(intValue: Swift.Int)
+  }
+  public init(image: Cache.Image)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public protocol StorageObservationRegistry {
+  associatedtype S : Cache.StorageAware
+  @discardableResult
+  func addStorageObserver<O>(_ observer: O, closure: @escaping (O, Self.S, Cache.StorageChange<Self.S.Key>) -> Swift.Void) -> Cache.ObservationToken where O : AnyObject
+  func removeAllStorageObservers()
+}
+public enum StorageChange<Key> : Swift.Equatable where Key : Swift.Hashable {
+  case add(key: Key)
+  case remove(key: Key)
+  case removeAll
+  case removeExpired
+}
+public func == <Key>(lhs: Cache.StorageChange<Key>, rhs: Cache.StorageChange<Key>) -> Swift.Bool where Key : Swift.Hashable
+public typealias Image = UIKit.UIImage
+public protocol StorageAware {
+  associatedtype Key : Swift.Hashable
+  associatedtype Value
+  var allKeys: [Self.Key] { get }
+  var allObjects: [Self.Value] { get }
+  func object(forKey key: Self.Key) throws -> Self.Value
+  func entry(forKey key: Self.Key) throws -> Cache.Entry<Self.Value>
+  func removeObject(forKey key: Self.Key) throws
+  func setObject(_ object: Self.Value, forKey key: Self.Key, expiry: Cache.Expiry?) throws
+  func existsObject(forKey key: Self.Key) throws -> Swift.Bool
+  func removeAll() throws
+  func removeExpiredObjects() throws
+  func isExpiredObject(forKey key: Self.Key) throws -> Swift.Bool
+}
+extension StorageAware {
+  public func object(forKey key: Self.Key) throws -> Self.Value
+  public func existsObject(forKey key: Self.Key) throws -> Swift.Bool
+  public func isExpiredObject(forKey key: Self.Key) throws -> Swift.Bool
+}
+public struct TypeWrapper<T> : Swift.Codable where T : Swift.Decodable, T : Swift.Encodable {
+  public let object: T
+  public init(object: T)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public typealias JSONDictionary = [Swift.String : Any]
+public struct JSONDictionaryWrapper : Swift.Codable {
+  public let jsonDictionary: Cache.JSONDictionary
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case jsonDictionary
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+    public init?(stringValue: Swift.String)
+    public var intValue: Swift.Int? {
+      get
+    }
+    public init?(intValue: Swift.Int)
+  }
+  public init(jsonDictionary: Cache.JSONDictionary)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public func MD5(_ input: Swift.String) -> Swift.String
+public class MemoryStorage<Key, Value> : Cache.StorageAware where Key : Swift.Hashable {
+  public init(config: Cache.MemoryConfig)
+  @objc deinit
+}
+extension MemoryStorage {
+  public var allKeys: [Key] {
+    get
+  }
+  public var allObjects: [Value] {
+    get
+  }
+  public func setObject(_ object: Value, forKey key: Key, expiry: Cache.Expiry? = nil)
+  public func removeAll()
+  public func removeExpiredObjects()
+  public func removeObjectIfExpired(forKey key: Key)
+  public func removeObject(forKey key: Key)
+  public func entry(forKey key: Key) throws -> Cache.Entry<Value>
+}
+extension MemoryStorage {
+  public func transform<U>() -> Cache.MemoryStorage<Key, U>
+}
+extension Optional {
+  public func unwrapOrThrow(error: Swift.Error) throws -> Wrapped
+}
+public struct DiskConfig {
+  public let name: Swift.String
+  public let expiry: Cache.Expiry
+  public let maxSize: Swift.UInt
+  public let directory: Foundation.URL?
+  public let protectionType: Foundation.FileProtectionType?
+  public init(name: Swift.String, expiry: Cache.Expiry = .never, maxSize: Swift.UInt = 0, directory: Foundation.URL? = nil, protectionType: Foundation.FileProtectionType? = nil)
+}
+public class Transformer<T> {
+  public init(toData: @escaping (T) throws -> Foundation.Data, fromData: @escaping (Foundation.Data) throws -> T)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class TransformerFactory {
+  public static func forData() -> Cache.Transformer<Foundation.Data>
+  public static func forImage() -> Cache.Transformer<Cache.Image>
+  public static func forCodable<U>(ofType: U.Type) -> Cache.Transformer<U> where U : Swift.Decodable, U : Swift.Encodable
+  @objc deinit
+}
+public typealias JSONArray = [Cache.JSONDictionary]
+public struct JSONArrayWrapper : Swift.Codable {
+  public let jsonArray: Cache.JSONArray
+  public enum CodingKeys : Swift.String, Swift.CodingKey {
+    case jsonArray
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+    public var stringValue: Swift.String {
+      get
+    }
+    public init?(stringValue: Swift.String)
+    public var intValue: Swift.Int? {
+      get
+    }
+    public init?(intValue: Swift.Int)
+  }
+  public init(jsonArray: Cache.JSONArray)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public class SyncStorage<Key, Value> where Key : Swift.Hashable {
+  final public let innerStorage: Cache.HybridStorage<Key, Value>
+  final public let serialQueue: Dispatch.DispatchQueue
+  public init(storage: Cache.HybridStorage<Key, Value>, serialQueue: Dispatch.DispatchQueue)
+  @objc deinit
+}
+extension SyncStorage : Cache.StorageAware {
+  public var allKeys: [Key] {
+    get
+  }
+  public var allObjects: [Value] {
+    get
+  }
+  public func entry(forKey key: Key) throws -> Cache.Entry<Value>
+  public func removeObject(forKey key: Key) throws
+  public func setObject(_ object: Value, forKey key: Key, expiry: Cache.Expiry? = nil) throws
+  public func removeAll() throws
+  public func removeExpiredObjects() throws
+}
+extension SyncStorage {
+  public func transform<U>(transformer: Cache.Transformer<U>) -> Cache.SyncStorage<Key, U>
+}
+public enum Expiry {
+  case never
+  case seconds(Foundation.TimeInterval)
+  case date(Foundation.Date)
+  public var date: Foundation.Date {
+    get
+  }
+  public var isExpired: Swift.Bool {
+    get
+  }
+}
+extension Storage {
+  final public func transformData() -> Cache.Storage<Key, Foundation.Data>
+  final public func transformImage() -> Cache.Storage<Key, Cache.Image>
+  final public func transformCodable<U>(ofType: U.Type) -> Cache.Storage<Key, U> where U : Swift.Decodable, U : Swift.Encodable
+}
+extension FileManager {
+  public func sizeOfDirectory(at url: Foundation.URL) -> Swift.Int?
+}
+public enum StorageError : Swift.Error {
+  case notFound
+  case typeNotMatch
+  case malformedFileAttributes
+  case decodingFailed
+  case encodingFailed
+  case deallocated
+  case transformerFail
+  public static func == (a: Cache.StorageError, b: Cache.StorageError) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+@_hasMissingDesignatedInitializers final public class ObservationToken {
+  final public func cancel()
+  @objc deinit
+}
+final public class HybridStorage<Key, Value> where Key : Swift.Hashable {
+  final public let memoryStorage: Cache.MemoryStorage<Key, Value>
+  final public let diskStorage: Cache.DiskStorage<Key, Value>
+  public init(memoryStorage: Cache.MemoryStorage<Key, Value>, diskStorage: Cache.DiskStorage<Key, Value>)
+  @objc deinit
+}
+extension HybridStorage : Cache.StorageAware {
+  final public var allKeys: [Key] {
+    get
+  }
+  final public var allObjects: [Value] {
+    get
+  }
+  final public func entry(forKey key: Key) throws -> Cache.Entry<Value>
+  final public func removeObject(forKey key: Key) throws
+  final public func setObject(_ object: Value, forKey key: Key, expiry: Cache.Expiry? = nil) throws
+  final public func removeAll() throws
+  final public func removeExpiredObjects() throws
+}
+extension HybridStorage {
+  final public func transform<U>(transformer: Cache.Transformer<U>) -> Cache.HybridStorage<Key, U>
+}
+extension HybridStorage : Cache.StorageObservationRegistry {
+  @discardableResult
+  final public func addStorageObserver<O>(_ observer: O, closure: @escaping (O, Cache.HybridStorage<Key, Value>, Cache.StorageChange<Key>) -> Swift.Void) -> Cache.ObservationToken where O : AnyObject
+  final public func removeAllStorageObservers()
+  public typealias S = Cache.HybridStorage<Key, Value>
+}
+extension HybridStorage : Cache.KeyObservationRegistry {
+  @discardableResult
+  final public func addObserver<O>(_ observer: O, forKey key: Key, closure: @escaping (O, Cache.HybridStorage<Key, Value>, Cache.KeyChange<Value>) -> Swift.Void) -> Cache.ObservationToken where O : AnyObject
+  final public func removeObserver(forKey key: Key)
+  final public func removeAllKeyObservers()
+}
+extension HybridStorage {
+  final public var totalDiskStorageSize: Swift.Int? {
+    get
+  }
+}
+public class AsyncStorage<Key, Value> where Key : Swift.Hashable {
+  final public let innerStorage: Cache.HybridStorage<Key, Value>
+  final public let serialQueue: Dispatch.DispatchQueue
+  public init(storage: Cache.HybridStorage<Key, Value>, serialQueue: Dispatch.DispatchQueue)
+  @objc deinit
+}
+extension AsyncStorage {
+  public func entry(forKey key: Key, completion: @escaping (Swift.Result<Cache.Entry<Value>, Swift.Error>) -> Swift.Void)
+  public func removeObject(forKey key: Key, completion: @escaping (Swift.Result<(), Swift.Error>) -> Swift.Void)
+  public func setObject(_ object: Value, forKey key: Key, expiry: Cache.Expiry? = nil, completion: @escaping (Swift.Result<(), Swift.Error>) -> Swift.Void)
+  public func removeAll(completion: @escaping (Swift.Result<(), Swift.Error>) -> Swift.Void)
+  public func removeExpiredObjects(completion: @escaping (Swift.Result<(), Swift.Error>) -> Swift.Void)
+  public func object(forKey key: Key, completion: @escaping (Swift.Result<Value, Swift.Error>) -> Swift.Void)
+  public func existsObject(forKey key: Key, completion: @escaping (Swift.Result<Swift.Bool, Swift.Error>) -> Swift.Void)
+}
+extension AsyncStorage {
+  public func transform<U>(transformer: Cache.Transformer<U>) -> Cache.AsyncStorage<Key, U>
+}
+extension JSONDecoder {
+  public static func decode<T>(_ string: Swift.String, to type: T.Type) throws -> T where T : Swift.Decodable, T : Swift.Encodable
+  public static func decode<T>(_ json: [Swift.String : Any], to type: T.Type) throws -> T where T : Swift.Decodable, T : Swift.Encodable
+  public static func decode<T>(_ data: Foundation.Data, to type: T.Type) throws -> T where T : Swift.Decodable, T : Swift.Encodable
+}
+public protocol KeyObservationRegistry {
+  associatedtype S : Cache.StorageAware
+  @discardableResult
+  func addObserver<O>(_ observer: O, forKey key: Self.S.Key, closure: @escaping (O, Self.S, Cache.KeyChange<Self.S.Value>) -> Swift.Void) -> Cache.ObservationToken where O : AnyObject
+  func removeObserver(forKey key: Self.S.Key)
+  func removeAllKeyObservers()
+}
+public enum KeyChange<T> {
+  case edit(before: T?, after: T)
+  case remove
+}
+extension KeyChange : Swift.Equatable where T : Swift.Equatable {
+  public static func == (lhs: Cache.KeyChange<T>, rhs: Cache.KeyChange<T>) -> Swift.Bool
+}
+final public class Storage<Key, Value> where Key : Swift.Hashable {
+  public convenience init(diskConfig: Cache.DiskConfig, memoryConfig: Cache.MemoryConfig, transformer: Cache.Transformer<Value>) throws
+  public init(hybridStorage: Cache.HybridStorage<Key, Value>)
+  final public var async: Cache.AsyncStorage<Key, Value> {
+    get
+    set(value)
+  }
+  @objc deinit
+}
+extension Storage : Cache.StorageAware {
+  final public var allKeys: [Key] {
+    get
+  }
+  final public var allObjects: [Value] {
+    get
+  }
+  final public func entry(forKey key: Key) throws -> Cache.Entry<Value>
+  final public func removeObject(forKey key: Key) throws
+  final public func setObject(_ object: Value, forKey key: Key, expiry: Cache.Expiry? = nil) throws
+  final public func removeAll() throws
+  final public func removeExpiredObjects() throws
+}
+extension Storage {
+  final public func transform<U>(transformer: Cache.Transformer<U>) -> Cache.Storage<Key, U>
+}
+extension Storage : Cache.StorageObservationRegistry {
+  @discardableResult
+  final public func addStorageObserver<O>(_ observer: O, closure: @escaping (O, Cache.Storage<Key, Value>, Cache.StorageChange<Key>) -> Swift.Void) -> Cache.ObservationToken where O : AnyObject
+  final public func removeAllStorageObservers()
+  public typealias S = Cache.Storage<Key, Value>
+}
+extension Storage : Cache.KeyObservationRegistry {
+  @discardableResult
+  final public func addObserver<O>(_ observer: O, forKey key: Key, closure: @escaping (O, Cache.Storage<Key, Value>, Cache.KeyChange<Value>) -> Swift.Void) -> Cache.ObservationToken where O : AnyObject
+  final public func removeObserver(forKey key: Key)
+  final public func removeAllKeyObservers()
+}
+extension Storage {
+  final public var totalDiskStorageSize: Swift.Int? {
+    get
+  }
+}
+public struct MemoryConfig {
+  public let expiry: Cache.Expiry
+  public let countLimit: Swift.UInt
+  public let totalCostLimit: Swift.UInt
+  public init(expiry: Cache.Expiry = .never, countLimit: Swift.UInt = 0, totalCostLimit: Swift.UInt = 0)
+}
+public enum ExpirationMode {
+  case auto
+  case manual
+  public static func == (a: Cache.ExpirationMode, b: Cache.ExpirationMode) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+public struct Entry<T> {
+  public let object: T
+  public let expiry: Cache.Expiry
+  public let filePath: Swift.String?
+}

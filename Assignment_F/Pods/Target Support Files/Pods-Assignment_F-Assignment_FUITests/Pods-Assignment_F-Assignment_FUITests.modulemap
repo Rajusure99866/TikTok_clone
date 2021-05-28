@@ -1,0 +1,6 @@
+framework module Pods_Assignment_F_Assignment_FUITests {
+  umbrella header "Pods-Assignment_F-Assignment_FUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

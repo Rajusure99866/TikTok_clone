@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="f4I-5N-jwQ">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Explore-->
+        <scene sceneID="hHM-1E-czI">
+            <objects>
+                <viewController title="Explore" id="jtK-s0-xRT" customClass="ExploreViewController" customModule="Assignment_F" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="e6Y-xF-XJx">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="210" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="5cd-hj-eNY">
+                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="jtK-s0-xRT" id="Kmz-zE-bw8"/>
+                                    <outlet property="delegate" destination="jtK-s0-xRT" id="1rN-sB-1pH"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="5cd-hj-eNY" secondAttribute="bottom" id="UAk-qM-VWv"/>
+                            <constraint firstItem="5cd-hj-eNY" firstAttribute="leading" secondItem="OVn-Ev-jMk" secondAttribute="leading" id="f79-R8-aMu"/>
+                            <constraint firstItem="OVn-Ev-jMk" firstAttribute="trailing" secondItem="5cd-hj-eNY" secondAttribute="trailing" id="oUc-aL-hCo"/>
+                            <constraint firstItem="5cd-hj-eNY" firstAttribute="top" secondItem="OVn-Ev-jMk" secondAttribute="top" id="rd4-UW-xP3"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="OVn-Ev-jMk"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Explore" id="Nso-mM-5Vy"/>
+                    <connections>
+                        <outlet property="videosList" destination="5cd-hj-eNY" id="4pU-Zs-PoG"/>
+                        <segue destination="LM2-rB-NbC" kind="show" identifier="videoPlayerView" id="e6x-lw-q5P"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="J4d-1m-9Ni" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2471.0144927536235" y="16.741071428571427"/>
+        </scene>
+        <!--Video Player Table View Controller-->
+        <scene sceneID="vAx-hE-hJq">
+            <objects>
+                <tableViewController id="LM2-rB-NbC" customClass="VideoPlayerTableViewController" customModule="Assignment_F" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" id="b9e-E6-VnQ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <connections>
+                            <outlet property="dataSource" destination="LM2-rB-NbC" id="gbB-HI-cW8"/>
+                            <outlet property="delegate" destination="LM2-rB-NbC" id="Dub-kW-DYR"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="XYz-uH-4SO"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="riV-FX-SCA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4209" y="0.0"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="uMD-0i-e7b">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="f4I-5N-jwQ" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="JHC-cb-ZEh">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="F34-Gt-m58">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="jtK-s0-xRT" kind="relationship" relationship="rootViewController" id="HWE-cg-CZd"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zjX-6C-HMn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1560.8695652173915" y="16.741071428571427"/>
+        </scene>
+    </scenes>
+</document>
